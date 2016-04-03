@@ -11,5 +11,6 @@ TO BUILD:
 --Build:
 * Run makefile in parent directory. If everything required is install and configure it will
 produce a megoro.iso file in parent directory
-* Boot this iso in your favourite emulator. 
+* Boot this iso in your favourite emulator.
+ 
 
