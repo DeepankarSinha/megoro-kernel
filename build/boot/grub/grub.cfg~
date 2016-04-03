@@ -1,3 +1,0 @@
-menuentry "merrygoround" {
-	multiboot /boot/merogo.bin
-}
