@@ -1,8 +1,0 @@
-#ifndef CMDLIST_H
-#define CMDLIST_H
-int listsize=3;
-const char * cmdlist[listsize];
-cmdlist[0]="help";
-cmdlist[1]="clear";
-cmdlist[3]="exit";
-#endif
