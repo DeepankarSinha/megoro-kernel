@@ -1,0 +1,14 @@
+#include<stdio.h>
+#include "script/lib/kstring.h"
+#include "script/cmd/cmdlist.h"
+main(){
+	char *a;
+	char *b="clear";
+	int i=-1;
+	//int x=kstrcmp(a,b);
+	do{
+		i++;
+		printf("%s %d",cmdlist[i],kstrcmp(b,cmdlist[i]));
+	}while(kstrcmp(b,cmdlist[i])!=0);
+	printf("DONE");
+}

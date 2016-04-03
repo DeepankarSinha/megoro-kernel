@@ -1,0 +1,225 @@
+#if !defined(__cplusplus)
+#include <stdbool.h> /* C doesn't have booleans by default. */
+#endif
+#include <stddef.h>
+#include <stdint.h>
+ 
+static inline uint8_t inb(uint16_t port);
+char getScancode();
+
+ 
+/* Hardware text mode color constants. */
+enum vga_color {
+	COLOR_BLACK = 0,
+	COLOR_BLUE = 1,
+	COLOR_GREEN = 2,
+	COLOR_CYAN = 3,
+	COLOR_RED = 4,
+	COLOR_MAGENTA = 5,
+	COLOR_BROWN = 6,
+	COLOR_LIGHT_GREY = 7,
+	COLOR_DARK_GREY = 8,
+	COLOR_LIGHT_BLUE = 9,
+	COLOR_LIGHT_GREEN = 10,
+	COLOR_LIGHT_CYAN = 11,
+	COLOR_LIGHT_RED = 12,
+	COLOR_LIGHT_MAGENTA = 13,
+	COLOR_LIGHT_BROWN = 14,
+	COLOR_WHITE = 15,
+};
+ 
+uint8_t make_color(enum vga_color fg, enum vga_color bg) {
+	return fg | bg << 4;
+}
+ 
+uint16_t make_vgaentry(char c, uint8_t color) {
+	uint16_t c16 = c;
+	uint16_t color16 = color;
+	return c16 | color16 << 8;
+}
+ 
+size_t strlen(const char* str) {
+	size_t ret = 0;
+	while ( str[ret] != 0 )
+		ret++;
+	return ret;
+}
+ 
+static const size_t VGA_WIDTH = 80;
+static const size_t VGA_HEIGHT = 25;
+ 
+size_t terminal_row;
+size_t terminal_column;
+uint8_t terminal_color;
+uint16_t* terminal_buffer;
+ 
+void terminal_initialize() {
+	terminal_row = 0;
+	terminal_column = 0;
+	terminal_color = make_color(COLOR_LIGHT_GREY, COLOR_BLACK);
+	terminal_buffer = (uint16_t*) 0xB8000;
+	size_t y=0;
+	size_t x=0;
+	while(y<VGA_HEIGHT){
+		while(x<VGA_WIDTH){
+			const size_t index = y * VGA_WIDTH + x;
+			terminal_buffer[index] = make_vgaentry(' ', terminal_color);
+			x++;
+		}
+		y++;
+	}
+	/*for (size_t y = 0; y < VGA_HEIGHT; y++) {
+		for (size_t x = 0; x < VGA_WIDTH; x++) {
+			const size_t index = y * VGA_WIDTH + x;
+			terminal_buffer[index] = make_vgaentry(' ', terminal_color);
+		}
+	}*/
+}
+ 
+void terminal_setcolor(uint8_t color) {
+	terminal_color = color;
+}
+ 
+void terminal_putentryat(char c, uint8_t color, size_t x, size_t y) {
+	const size_t index = y * VGA_WIDTH + x;
+	terminal_buffer[index] = make_vgaentry(c, color);
+}
+void scroll(){
+	int x,y=1,i,k;
+	while(y<VGA_HEIGHT){
+		x=0;
+		while(x<VGA_WIDTH){
+			i=(y-1)*VGA_WIDTH+x;
+			k=y*VGA_WIDTH+x;
+			terminal_buffer[i]=terminal_buffer[k];
+			x++;
+		}
+		y++;
+	}
+	x=0;
+	terminal_column=0;
+	while(x<80){
+		terminal_putentryat(' ', terminal_color, terminal_column, terminal_row);
+		terminal_column++;
+		x++;	
+	}
+	
+}
+
+void nextline(){
+	terminal_row++;
+	terminal_column=0;
+}
+ 
+void terminal_putchar(char c) {
+	if(c=='\n')
+		nextline();
+	else{
+		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
+		if (++terminal_column == VGA_WIDTH) {
+			terminal_column = 0;
+			if (++terminal_row == VGA_HEIGHT) {
+				terminal_row = 0;
+			}
+		}
+	}
+}
+
+
+
+
+ 
+void terminal_writestring(const char* data) {
+	size_t datalen = strlen(data);
+	size_t i=0;
+	while(i<datalen){
+		terminal_putchar(data[i]);
+		i++;
+	}
+	/*for (size_t i = 0; i < datalen; i++)
+		terminal_putchar(data[i]);*/
+}
+
+char *itoca(int n){
+	int s,d,t,len;
+	char dig[]="0123456789";
+	static char p[30];
+	char* q;
+	q=p;
+	t=n;
+	len=0;
+	if(n==0)
+		return "0";
+	while(t!=0){
+		t=t/10;
+		len++;
+	}
+	t=n;
+	p[len]='\0';
+	while(t!=0){
+		d=t%10;
+		p[--len]=dig[d];
+		t=t/10;
+	}
+	//printf("\n%s \nend\n",q);
+	return p;
+}
+
+
+
+//IO functions
+char scancode[]={' ','1','2','3','4','5','6','7','8','9','0','-','=','\b','\t','q','w','e','r','t','y','u','i'
+,'o','p','[',']','\e',' ','a','s','d','f','g','h','j','k','l',';',' ','`',' ','\\','z','x','c','v'
+,'b','n','m',',','.','/',' ','*',' ',' '};
+static inline uint8_t inb(uint16_t port){
+	uint8_t ret;
+	asm volatile ("inb %1, %0"
+			: "=a"(ret)
+			: "Nd"(port));
+	return ret;
+}
+
+char getScancode(){
+	char c=0;
+	do{
+		if(inb(0x60)!=c){
+			c=inb(0x60);
+			if(c>0)
+				return c;
+		}
+	}while(1);
+}
+char getcode(){
+	int code=getScancode();
+	if(code>57)
+		return ' ';
+	else
+		return scancode[code+1];
+}
+
+ 
+#if defined(__cplusplus)
+extern "C" /* Use C linkage for kernel_main. */
+#endif
+void kernel_main() {
+	int i=0,x;
+	char c;
+	/* Initialize terminal interface */
+	terminal_initialize();
+ 
+	/* Since there is no support for newlines in terminal_putchar
+         * yet, '\n' will produce some VGA specific character instead.
+         * This is normal.
+         */
+	terminal_writestring("Project Merry Go Round");
+	nextline();
+	terminal_writestring("Kernel level. #DevelopingKernel");
+	nextline();
+	terminal_writestring("Version 0.0.0.1");
+	
+	while(i<25){
+		x=getcode();
+		terminal_writestring(itoca(x));
+	}	
+	
+}

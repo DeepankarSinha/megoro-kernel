@@ -1,0 +1,7 @@
+#ifndef CMDHELP_H
+#define CMDHELP_H
+#include "help.h"
+void showHelp(char *cmdln){
+}
+
+#endif
