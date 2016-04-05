@@ -1,7 +1,7 @@
 # megoro-kernel
 Project merogo (MErryGOROund) is based on designing and developing a kernel for educational purpose..(really?)
 
-TO BUILD:
+TO BUILD:s
 --Requirement:
 * Linux environment (gcc compiler)
 * Latest NASM assembler

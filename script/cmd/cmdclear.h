@@ -1,6 +1,10 @@
+/*
+*Copyright 2016 Deepankar Sinha
+*
+*/
 #ifndef CMDCLEAR_H
 #define CMDCLEAR_H
-#include "../lib/llio.h"
+#include "../sys/system.h"
 
 int clear(){
 	clearScreen();

@@ -1,6 +1,10 @@
+/*
+*Copyright 2016 Deepankar Sinha
+*
+*/
 #ifndef KSTRING_H
 #define KSTRING_H
-
+#include <stddef.h>
 char* kstrcpy(char*,const char*);
 size_t kstrlen(const char*);
 char *kstrcat(char*,const char*);

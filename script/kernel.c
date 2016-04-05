@@ -1,28 +1,29 @@
+/*
+*Copyright 2016 Deepankar Sinha
+*
+*/
+
 #if !defined(__cplusplus)
 #include <stdbool.h> /* C doesn't have booleans by default. */
 #endif
-#include <stddef.h>
-#include <stdint.h>
-#include "lib/io.h"
-#include "lib/kstring.h"
-#include "prompt.h"
- 
-#if defined(__cplusplus)
-extern "C" /* Use C linkage for kernel_main. */
-#endif
+#include "sys/system.h"
+#include "terminal.h"
 void kernel_main() {
-	int i=0,x;
-	char c;
-	char* str;
-	/* Initialize terminal interface */
+	/* Initialization */
 	terminal_initialize();
- 
-	/* Since there is no support for newlines in terminal_putchar
-         * yet, '\n' will produce some VGA specific character instead.
-         * This is normal.
-         */
-	kprint("Project Merry Go Round\n");
-	kprint("Kernel level. #DevelopingKernel\n");
-	kprint("Version 0.0.0.1\n");
+	kprint("Kernel Loading...\nInitializing GDT......");
+ 	gdt_install();
+	kprint("DONE\nInitializing IDT......");
+	idt_install();
+	kprint("DONE\nkInitializing ISRS......");
+	isrs_install();
+	kprint("DONE\nkInitializing IRQ......");
+	irq_install();
+	__asm__ __volatile__ ("sti");
+	kprint("DONE\nInitializing Timer......");
+	void timer_install();
+	kprint("DONE\nInitializing Done......Kernel Ready\n\nMEGORO Terminal alpha ver--\n");
 	promptmode();
+	while(1);
+	
 }
