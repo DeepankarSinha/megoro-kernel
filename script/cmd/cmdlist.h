@@ -4,6 +4,6 @@
 */
 #ifndef CMDLIST_H
 #define CMDLIST_H
-int listsize=3;
-const char cmdlist[][10]={"help","clear","exit"};
+static int list_size=5;
+static char cmd_list[][10]={"help","clear","exit","cpuinfo","cputime"};
 #endif

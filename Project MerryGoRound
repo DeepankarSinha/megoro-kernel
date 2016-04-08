@@ -1,8 +1,10 @@
-MerryGoRound(MGR), a OS development project for niether too big nor too small screen devices.
+MerryGoRound(MGR), a OS development project for niether too big nor too small screen devices(tablet pc).
 Features: Not Yet thought :P, but will be fast and furious :D.
 
 References:
-*wiki.osdev.com
+*wiki.osdev.org
 
 Updates:
-21-03-16:This file was created!! 
+21-03-2016:This file was created!! 
+08-04-2016:Completed adding GDT,IDT,ISRS,IRQ,RTC support. Added protected mode.
+	   

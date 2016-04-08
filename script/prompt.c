@@ -3,8 +3,7 @@
 *
 */
 #include "sys/system.h"
-#include "cmd/cmd.h"
-#include "lib/kstring.h"
+#include "cmd/command.h"
 #include "terminal.h"
 
 char *cscan();

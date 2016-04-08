@@ -65,4 +65,9 @@ void kpi(int n){
 	char *p=itoca(n);
 	terminal_writestring(p);
 }
+//Prints long
+void kpl(long n){
+	char *p=ltoca(n);
+	terminal_writestring(p);
+}
 #endif

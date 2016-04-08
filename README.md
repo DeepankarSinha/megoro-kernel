@@ -1,5 +1,5 @@
 # megoro-kernel
-Project merogo (MErryGOROund) is based on designing and developing a kernel for educational purpose..(really?)
+Project merogo (MErryGOROund) is based on designing and developing a kernel for educational purpose...
 
 TO BUILD:s
 --Requirement:

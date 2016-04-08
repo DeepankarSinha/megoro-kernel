@@ -1,9 +1,9 @@
-#include " system.h "
+#include "system.h"
 
 /* This will keep track of how many ticks that the system
 *  has been running for */
 int timer_ticks = 0;
-
+long elapsedseconds=0;
 /* Handles the timer. In this case, it's very simple: We
 *  increment the 'timer_ticks' variable every time the
 *  timer fires. By default, the timer fires 18.222 times
@@ -18,8 +18,13 @@ void timer_handler(struct regs *r)
     *  display a message on the screen */
     if (timer_ticks % 18 == 0)
     {
-        puts("One second has passed\n");
+        //kprint("One second has passed\n");
+	elapsedseconds++;
     }
+}
+
+long get_CPU_time_in_seconds(){
+	return elapsedseconds;
 }
 
 /* Sets up the system clock by installing the timer handler
@@ -30,10 +35,11 @@ void timer_install()
     irq_install_handler(0, timer_handler);
 }
 
-void sleep(int ticks)
+void sleep(int sec)
 {
-    unsigned long eticks;
+    unsigned long eticks,i=0;
 
-    eticks = timer_ticks + ticks;
-    while(timer_ticks < eticks);
+    eticks = elapsedseconds + sec;
+    while(elapsedseconds < eticks){kps(" \b");	}
+    
 }

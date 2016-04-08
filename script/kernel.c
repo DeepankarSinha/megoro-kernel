@@ -8,22 +8,17 @@
 #endif
 #include "sys/system.h"
 #include "terminal.h"
-void kernel_main() {
+#include "multiboot.h"
+extern void enter_pmode();
+void kernel_main(multiboot_info_t* mbd,unsigned int magic) {
 	/* Initialization */
 	terminal_initialize();
 	kprint("Kernel Loading...\nInitializing GDT......");
  	gdt_install();
 	kprint("DONE\nInitializing IDT......");
 	idt_install();
-	kprint("DONE\nkInitializing ISRS......");
-	isrs_install();
-	kprint("DONE\nkInitializing IRQ......");
-	irq_install();
-	__asm__ __volatile__ ("sti");
-	kprint("DONE\nInitializing Timer......");
-	void timer_install();
-	kprint("DONE\nInitializing Done......Kernel Ready\n\nMEGORO Terminal alpha ver--\n");
-	promptmode();
-	while(1);
+	kprint("DONE\n");
+	
+	enter_pmode();	
 	
 }

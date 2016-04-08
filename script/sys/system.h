@@ -9,6 +9,7 @@ extern void kps(char*);
 extern void kpc(char);
 extern void kpi(int);
 extern char *itoca(int n);
+extern char *ltoca(long n);
 extern void terminal_putchar(char);
 extern void scroll();
 extern void moveCursorRight();
@@ -35,5 +36,5 @@ extern void isrs_install();
 extern void irq_install();
 extern void timer_install();
 extern void sleep(int ticks);
-
+extern long get_CPU_time_in_seconds();
 #endif

@@ -6,7 +6,7 @@
 #define KSTRING_H
 #include <stddef.h>
 char* kstrcpy(char*,const char*);
-size_t kstrlen(const char*);
+int kstrlen(const char*);
 char *kstrcat(char*,const char*);
 char *kstrchr(const char*,int);
 char *kstrsub(char*,int,int);
@@ -31,11 +31,11 @@ char* kstrcpy(char* s1,const char* s2){
 	return s1;
 }
 
-size_t kstrlen(const char* s){
+int kstrlen(const char* s){
 	const char *p = s;
 	while(*p!='\0')
 		p++;
-	return (size_t)(p-s);
+	return (int)(p-s);
 }
 
 char *kstrcat(char *s1,const char *s2){
