@@ -75,4 +75,5 @@ int kindexof(char * s,char c){
 			return i;
 	return -1;
 }
+
 #endif

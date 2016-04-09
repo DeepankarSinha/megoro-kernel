@@ -5,6 +5,10 @@
 #include "sys/system.h"
 #include "sys/rtc.h"
 #include "terminal.h"
+
+#include "mem/alloc.h"
+#include "stddef.h"
+
 void pmode(){
 	kprint("Entered Protected Mode\nInitializing ISRS......");
 	isrs_install();

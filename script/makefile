@@ -5,6 +5,7 @@ all:
 	cd sys; make
 	cd cpu; make
 	cd cmd; make
+	cd mem; make
 	make kc.o
 
 kc.o: kernel.c prompt.c protectedmode.c $(hlib1) $(hlib2) $(hlib3) 
